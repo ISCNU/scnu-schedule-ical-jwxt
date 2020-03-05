@@ -6,7 +6,7 @@ export const title='课程表导出小帮手 - ISCNU'
 export const domain = '*'
 export const jwxtOrigin = 'https://jwxt.scnu.edu.cn'
 export const jwxtUrl = `${jwxtOrigin}/`
-export const documentPath = '/doc.md'
+export const documentPath = `${process.env.PUBLIC_URL}/doc.md`
 export const calendarData = {
 	domain: 'jwc.scnu.edu.cn',
 	prodId: {
