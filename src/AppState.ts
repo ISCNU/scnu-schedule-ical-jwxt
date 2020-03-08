@@ -3,8 +3,8 @@
 import { create, UseStore, StoreApi } from 'zustand';
 
 import { ICalCalendar } from 'ical-generator';
-import * as Rules from './rules';
-import { GenerateOptions } from './generator';
+import * as Rules from './utils/rules';
+import { GenerateOptions } from './utils/generator';
 
 declare module 'ical-generator' {
   interface ICalCalendar {

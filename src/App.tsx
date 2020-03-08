@@ -3,9 +3,12 @@ import 'antd/dist/antd.css';
 import React, { useEffect, useState } from 'react';
 import './App.css';
 import { getAppState, useAppState } from './AppState';
-import { Footer, GettingStart, HelpDoc, Introduction, Navbar, ResultPage } from './fragments';
-import generator, { CourseDataTransformer } from './generator';
-import * as Rules from './rules';
+import { GettingStart, Introduction, ResultPage } from './fragments';
+import NavBar from './components/NavBar';
+import Footer from './components/Footer';
+import HelpDoc from './components/HelpDoc';
+import generator, { CourseDataTransformer } from './utils/generator';
+import * as Rules from './utils/rules';
 
 function Debugger() {
   const [visible, setVisible] = useState(false);
@@ -62,7 +65,7 @@ function App() {
   return (
     <>
       <Debugger />
-      <Navbar />
+      <NavBar />
       <Introduction />
       <GettingStart />
       <HelpDoc />

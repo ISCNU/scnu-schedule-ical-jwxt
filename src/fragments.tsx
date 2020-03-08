@@ -1,37 +1,29 @@
-import { faBars, faCopy } from '@fortawesome/free-solid-svg-icons';
+import { faCopy } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useAsync, useInViewport, useResponsive, useSize, useToggle } from '@umijs/hooks';
+import { useInViewport, useResponsive, useSize } from '@umijs/hooks';
 import {
-  Affix,
   Button,
   Checkbox,
   Collapse,
-  Drawer,
   Form,
   InputNumber,
   Layout,
-  Menu,
-  Result,
   Select,
-  Skeleton,
   Switch,
   Tooltip
 } from 'antd';
 import copy from 'copy-to-clipboard';
 import { motion, transform } from 'framer-motion';
-import React, { CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
-import ReactDOM from 'react-dom';
+import React, { CSSProperties, useEffect, useRef, useState } from 'react';
 import { useScrollPercentage } from 'react-scroll-percentage';
-import SmoothScroll from 'smooth-scroll';
 import { getAppState, ProgressState, useAppState } from './AppState';
 import { IntroductionImageSources } from './fragments.assets';
 import Styles from './fragments.module.css';
-import { useBodyScrollLock } from './hooks';
-import MarkdownParser, { ContentWithTocNodesSet } from './MarkdownParser';
 import { FinishCircle, mapFirstImgScale, mapPosX, mapSecondImgScale, marks } from './movieclips';
-import * as Rules from './rules';
 
-const { animateScroll } = new SmoothScroll();
+import ScreenPage from './components/ScreenPage';
+
+import * as Rules from './utils/rules';
 
 const Section = React.forwardRef<
   HTMLElement,
@@ -55,120 +47,6 @@ function screenshotProps(id: number) {
     alt: '展示效果',
     src: IntroductionImageSources[id - 1]
   };
-}
-
-enum MenuItemKey {
-  Introduction,
-  GettingStart,
-  Help,
-  AboutUs
-}
-
-export function Navbar() {
-  const biggerThanXs = useResponsive().sm;
-  const { state: collapsed, toggle: toggleCollapsed } = useToggle();
-  const showingHelpDoc = useAppState((state) => state.showingHelpDoc);
-  const [watchingGettingStart] = useInViewport(useAppState((state) => state.gettingStartElement));
-
-  const menuItems = useMemo(
-    () => [
-      <Menu.Item
-        onClick={() => {
-          const appState = getAppState();
-          appState.turnToIdle();
-          appState.hideHelpDoc();
-          animateScroll(getAppState().introductionElement);
-          toggleCollapsed(false);
-        }}
-        key={`${MenuItemKey.Introduction}`}
-      >
-        介绍
-      </Menu.Item>,
-      <Menu.Item
-        key={`${MenuItemKey.GettingStart}`}
-        onClick={() => {
-          const appState = getAppState();
-          appState.turnToIdle();
-          appState.hideHelpDoc();
-          animateScroll(appState.gettingStartElement);
-          toggleCollapsed(false);
-        }}
-      >
-        立即使用
-      </Menu.Item>,
-      <Menu.Item
-        onClick={() => {
-          const appState = getAppState();
-          appState.showHelpDoc();
-          appState.turnToIdle();
-          toggleCollapsed(false);
-        }}
-        key={`${MenuItemKey.Help}`}
-      >
-        帮助文档
-      </Menu.Item>,
-      <Menu.Item key={`${MenuItemKey.AboutUs}`}>
-        <a href="https://i.scnu.edu.cn/" target="_about">
-          关于我们
-        </a>
-      </Menu.Item>
-    ],
-    []
-  );
-
-  return (
-    <>
-      <Affix>
-        <header>
-          <Menu
-            mode="horizontal"
-            style={{ textAlign: 'right', padding: '0 2rem' }}
-            selectedKeys={[
-              showingHelpDoc
-                ? `${MenuItemKey.Help}`
-                : watchingGettingStart
-                ? `${MenuItemKey.GettingStart}`
-                : `${MenuItemKey.Introduction}`
-            ]}
-          >
-            {biggerThanXs ? (
-              [
-                <Menu.Item
-                  key={-1}
-                  onClick={() => {
-                    window.open('https://i.scnu.edu.cn/about/');
-                  }}
-                  style={{ float: 'left' }}
-                >
-                  <img src="logo.png" style={{ height: '1.75rem' }} />
-                </Menu.Item>,
-                ...menuItems
-              ]
-            ) : (
-              <Menu.Item
-                onClick={() => {
-                  toggleCollapsed();
-                }}
-              >
-                <FontAwesomeIcon icon={faBars} />
-              </Menu.Item>
-            )}
-          </Menu>
-        </header>
-      </Affix>
-      <Drawer
-        visible={!biggerThanXs && collapsed}
-        onClose={() => {
-          toggleCollapsed(false);
-        }}
-        style={{ padding: 0 }}
-      >
-        <Menu mode="vertical" style={{ marginTop: 64, border: 0 }}>
-          {menuItems}
-        </Menu>
-      </Drawer>
-    </>
-  );
 }
 
 export function Introduction() {
@@ -545,79 +423,6 @@ export function GettingStart() {
   );
 }
 
-export function ScreenPage({
-  show,
-  children,
-  style
-}: React.PropsWithChildren<{
-  show: boolean;
-  style?: CSSProperties;
-}>) {
-  useBodyScrollLock(show);
-
-  return ReactDOM.createPortal(
-    <div hidden={!show}>
-      <div className={Styles.ScreenPage} {...{ style }}>
-        <Navbar />
-        {children}
-      </div>
-    </div>,
-    document.body
-  );
-}
-
-export function HelpDoc() {
-  const [content, setContent] = useState<ContentWithTocNodesSet | undefined>();
-  const [error, setError] = useState('');
-  const show = useAppState((state) => state.showingHelpDoc);
-  const smallerThanMd = !useResponsive().md;
-
-  useAsync(async () => {
-    if (show && !content) {
-      try {
-        setContent(MarkdownParser.convert(await (await fetch(Rules.documentPath)).text()));
-      } catch (error) {
-        setError(`${error}`);
-      }
-    }
-  }, [show, content]);
-
-  return (
-    <ScreenPage {...{ show }}>
-      {error ? (
-        <Result status="error" title="发生错误" subTitle="你可以把这个问题反馈给我们。">
-          {error}
-        </Result>
-      ) : !content ? (
-        <Skeleton />
-      ) : smallerThanMd ? (
-        <div style={{ overflowY: 'auto', padding: '2rem' }}>
-          <nav>
-            <h1>目录</h1>
-            {content.toc}
-          </nav>
-          <article className={Styles.Article} style={{ paddingTop: '1rem' }}>
-            {content.body}
-          </article>
-        </div>
-      ) : (
-        <div className={Styles.HelpDocContainer} style={{ overflowY: 'hidden' }}>
-          <nav style={{ overflowY: 'auto' }}>
-            <h1>目录</h1>
-            {content.toc}
-          </nav>
-          <article
-            className={Styles.Article}
-            style={{ overflowY: 'auto', flexGrow: 1, padding: '1rem 2rem 0' }}
-          >
-            {content.body}
-          </article>
-        </div>
-      )}
-    </ScreenPage>
-  );
-}
-
 export function ResultPage() {
   const progress = useAppState((state) => state.progress);
   const turnToIdle = useAppState((state) => state.turnToIdle);
@@ -674,19 +479,5 @@ export function ResultPage() {
         </motion.div>
       )}
     </ScreenPage>
-  );
-}
-
-export function Footer() {
-  return (
-    <footer style={{ textAlign: 'center', lineHeight: 2, margin: '2rem 0' }}>
-      Copyright © 2008-2020
-      <a href="https://i.scnu.edu.cn/about/" target="_about" style={{ padding: '0 0.25rem' }}>
-        ISCNU
-      </a>
-      . All rights Reserved.
-      <br />
-      华南师范大学网络协会 版权所有
-    </footer>
   );
 }
