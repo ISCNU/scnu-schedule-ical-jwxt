@@ -7,6 +7,9 @@ import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { Affix, Menu, Drawer } from 'antd';
 
 import { getAppState, useAppState } from '../AppState';
+
+import iscnuLogo from '../assets/imgs/iscnu-logo.png';
+
 const { animateScroll } = new SmoothScroll();
 
 enum MenuItemKey {
@@ -85,14 +88,8 @@ export default function NavBar() {
           >
             {biggerThanXs ? (
               [
-                <Menu.Item
-                  key={-1}
-                  onClick={() => {
-                    window.open('https://i.scnu.edu.cn/about/');
-                  }}
-                  style={{ float: 'left' }}
-                >
-                  <img src="logo.png" alt="ISCNU" style={{ height: '1.75rem' }} />
+                <Menu.Item key={-1} style={{ float: 'left' }}>
+                  <img src={iscnuLogo} alt="ISCNU" style={{ height: '1.75rem' }} />
                 </Menu.Item>,
                 ...menuItems
               ]
