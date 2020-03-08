@@ -65,7 +65,7 @@ export default function NavBar() {
         </a>
       </Menu.Item>
     ],
-    []
+    [toggleCollapsed]
   );
 
   return (
@@ -92,7 +92,7 @@ export default function NavBar() {
                   }}
                   style={{ float: 'left' }}
                 >
-                  <img src="logo.png" style={{ height: '1.75rem' }} />
+                  <img src="logo.png" alt="ISCNU" style={{ height: '1.75rem' }} />
                 </Menu.Item>,
                 ...menuItems
               ]

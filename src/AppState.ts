@@ -3,7 +3,6 @@
 import { create, UseStore, StoreApi } from 'zustand';
 
 import { ICalCalendar } from 'ical-generator';
-import * as Rules from './utils/rules';
 import { GenerateOptions } from './utils/generator';
 
 declare module 'ical-generator' {
@@ -93,7 +92,7 @@ const created = create((set, get) => ({
     set({ window: window.open(url) });
   },
   closeChildWindow() {
-    get().window!.close();
+    get().window!!.close();
     set({ window: undefined });
   },
 
