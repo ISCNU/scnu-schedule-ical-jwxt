@@ -1,14 +1,19 @@
 import { useEventListener, useKeyPress } from '@umijs/hooks';
-import 'antd/dist/antd.css';
 import React, { useEffect, useState } from 'react';
-import './App.css';
 import { getAppState, useAppState } from './AppState';
-import { GettingStart, Introduction, ResultPage } from './fragments';
+
 import NavBar from './components/NavBar';
 import Footer from './components/Footer';
 import HelpDoc from './components/HelpDoc';
+import Introduction from './components/Introduction';
+import GettingStart from './components/GettingStart';
+import ResultPage from './components/ResultPage';
+
 import generator, { CourseDataTransformer } from './utils/generator';
 import * as Rules from './utils/rules';
+
+import 'antd/dist/antd.css';
+import './App.css';
 
 function Debugger() {
   const [visible, setVisible] = useState(false);
