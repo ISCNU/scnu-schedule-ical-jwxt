@@ -1,7 +1,7 @@
-import { useEffect } from 'react'
+import { useEffect } from 'react';
 
-export function useBodyScrollLock(open: boolean = true) {
-	useEffect(() => {
-		document.body.style.overflowY = open ? 'hidden' : ''
-	}, [open])
+export function useBodyScrollLock(open = true) {
+  useEffect(() => {
+    document.body.style.overflowY = open ? 'hidden' : '';
+  }, [open]);
 }

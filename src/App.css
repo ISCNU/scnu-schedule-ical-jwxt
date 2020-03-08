@@ -1,9 +1,9 @@
 /* 全局样式 */
 .ant-btn svg {
-	margin-right: 0.5rem;
+  margin-right: 0.5rem;
 }
 
 body {
-	font-size: 12pt;
-	overflow-x: hidden;
+  font-size: 12pt;
+  overflow-x: hidden;
 }

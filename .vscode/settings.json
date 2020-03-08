@@ -1,17 +1,22 @@
 {
-	"cSpell.words": [
-		"Daxuecheng",
-		"ISCNU",
-		"Nanhai",
-		"Shipai",
-		"Zustand",
-		"antd",
-		"fontawesome",
-		"fortawesome",
-		"ical",
-		"jwxt",
-		"rehype",
-		"scnu",
-		"umijs"
-	]
+  "cSpell.words": [
+    "Daxuecheng",
+    "ISCNU",
+    "Nanhai",
+    "Shipai",
+    "Zustand",
+    "antd",
+    "fontawesome",
+    "fortawesome",
+    "ical",
+    "jwxt",
+    "rehype",
+    "scnu",
+    "umijs"
+  ],
+  "eslint.validate": ["javascript", "javascriptreact", "vue", "typescript", "typescriptreact"],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "editor.formatOnSave": true
 }
